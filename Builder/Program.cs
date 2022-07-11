@@ -1,4 +1,4 @@
-﻿namespace Builder;
+﻿namespace CarBuilder;
 
 class Program
 {
@@ -23,85 +23,65 @@ Engine {Engine}
 TripComputer {TripComputer}
 GPS {GPS}";
     }
-    class Manual
+    
+    interface IBuilderCars
     {
-        public string? Make { get; set; }
-        public string? Model { get; set; }
-        public int Year { get; set; }
-        public int Seats { get; set; }
-        public string? Engine { get; set; }
-        public string? TripComputer { get; set; }
-        public bool GPS { get; set; }
-        public bool Has3Pedals { get; set; }
-
-
-        public override string ToString() =>
-            $@"
-Make {Make}
-Model {Model}
-Year {Year}
-Seats {Seats}
-Engine {Engine}
-TripComputer {TripComputer}
-GPS {GPS}
-Has3Pedals {Has3Pedals}";
-    }
-
-    interface IBuilder
-    {
+        Car Car { get; set; }
         void Reset();
-        IBuilder SetMake(string make);
-        IBuilder SetModel(string model);
-        IBuilder SetYear(int year);
-        IBuilder SetSeats(int number);
-        IBuilder SetEngine(string engine);
-        IBuilder SetTripComputer(string com);
-        IBuilder SetGPS();
+        Car Build();
+
+        IBuilderCars SetMake(string make);
+        IBuilderCars SetModel(string model);
+        IBuilderCars SetYear(int year);
+        IBuilderCars SetSeats(int number);
+        IBuilderCars SetEngine(string engine);
+        IBuilderCars SetTripComputer(string com);
+        IBuilderCars SetGPS();
     }
 
-    class CarBuilder : IBuilder
+    class CarBuilder : IBuilderCars
     {
         public Car Car { get; set; } = new Car();
 
         public void Reset() => Car = new Car();
 
-        public IBuilder SetEngine(string engine)
+        public IBuilderCars SetEngine(string engine)
         {
             Car.Engine = engine;
             return this;
         }
 
-        public IBuilder SetGPS()
+        public IBuilderCars SetGPS()
         {
             Car.GPS = true;
             return this;
         }
 
-        public IBuilder SetMake(string make)
+        public IBuilderCars SetMake(string make)
         {
             Car.Make = make;
             return this;
         }
 
-        public IBuilder SetModel(string model)
+        public IBuilderCars SetModel(string model)
         {
             Car.Model = model;
             return this;
         }
 
-        public IBuilder SetSeats(int number)
+        public IBuilderCars SetSeats(int number)
         {
             Car.Seats = number;
             return this;
         }
 
-        public IBuilder SetTripComputer(string com)
+        public IBuilderCars SetTripComputer(string com)
         {
             Car.TripComputer = com;
             return this;
         }
 
-        public IBuilder SetYear(int year)
+        public IBuilderCars SetYear(int year)
         {
             Car.Year = year;
             return this;
@@ -111,74 +91,77 @@ Has3Pedals {Has3Pedals}";
         {
             return Car;
         }
+
+        public Car Build() => Car;
     }
 
-    class CarManualBuilder : IBuilder
+    class CarManualBuilder : IBuilderCars
     {
-        public Manual Manual { get; set; } = new Manual();
+        public Car Car { get; set; } = new Car();
 
-        public void Reset() => Manual = new Manual();
+        public void Reset() => Car = new Car();
 
-        public IBuilder SetEngine(string engine)
+        public IBuilderCars SetEngine(string engine)
         {
-            Manual.Engine = engine;
+            Car.Engine = engine;
             return this;
         }
 
-        public IBuilder SetGPS()
+        public IBuilderCars SetGPS()
         {
-            Manual.GPS = true;
+            Car.GPS = true;
             return this;
         }
 
-        public IBuilder SetMake(string make)
+        public IBuilderCars SetMake(string make)
         {
-            Manual.Make = make;
+            Car.Make = make;
             return this;
         }
 
-        public IBuilder SetModel(string model)
+        public IBuilderCars SetModel(string model)
         {
-            Manual.Model = model;
+            Car.Model = model;
             return this;
         }
 
-        public IBuilder SetSeats(int number)
+        public IBuilderCars SetSeats(int number)
         {
-            Manual.Seats = number;
+            Car.Seats = number;
             return this;
         }
 
-        public IBuilder SetTripComputer(string com)
+        public IBuilderCars SetTripComputer(string com)
         {
-            Manual.TripComputer = com;
+            Car.TripComputer = com;
             return this;
         }
 
-        public IBuilder SetYear(int year)
+        public IBuilderCars SetYear(int year)
         {
-            Manual.Year = year;
+            Car.Year = year;
             return this;
         }
 
-        public Manual GetResult()
+        public Car GetResult()
         {
-            return Manual;
+            return Car;
         }
 
+        public Car Build() => Car;
     }
 
 
     class Director
     {
-        public void MakeSportsCar(IBuilder builder)
+        public void MakeSportsCar(IBuilderCars builder)
         {
             builder.Reset();
             builder.SetMake("Bmw");
             builder.SetModel("X5");
             builder.SetYear(2002);
-            builder.SetSeats(2);
-            builder.SetEngine("Sport Engine");
+            builder.SetSeats(4);
+            builder.SetEngine("Engine");
             builder.SetTripComputer("TripComputer");
             builder.SetGPS();
         }
@@ -186,10 +169,31 @@ Has3Pedals {Has3Pedals}";
 
     static void Main(string[] args)
     {
-        Director director = new Director();
-        CarBuilder builder = new CarBuilder();
-        director.MakeSportsCar(builder);
-        Car car = builder.GetResult();
+        //Director director = new Director();
+        //CarBuilder builder = new CarBuilder();
+        //director.MakeSportsCar(builder);
+        //Car car = builder.GetResult();
+        //Console.WriteLine(car);
+
+        ////////////////////////////////////////////////////////
+
+        //IBuilderCars builderCars = new CarManualBuilder();
+        //Car manual = builderCars
+        //    .SetMake("Bmw")
+        //    .SetModel("X5")
+        //    .SetSeats(4)
+        //    .Build();
+        //Console.WriteLine(manual);
+
+        ////////////////////////////////////////////////////////
+
+        IBuilderCars builderCars = new CarBuilder();
+        Car car = builderCars
+            .SetMake("Bmw")
+            .SetModel("X5")
+            .SetSeats(4)
+            .Build();
         Console.WriteLine(car);
+
     }
 }
